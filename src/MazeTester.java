@@ -39,6 +39,9 @@ public class MazeTester {
         MazeSolver ms = new MazeSolver(maze);
         ArrayList<MazeCell> received = ms.getSolution();
 
+//        System.out.println(expected);
+//        System.out.println(received);
+
         // Check if solutions are equal size
         if (received.size() != expected.size()) {
             System.out.println("Test Get Solution Failed: Paths are different sizes");

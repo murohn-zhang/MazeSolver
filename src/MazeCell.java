@@ -51,4 +51,9 @@ public class MazeCell {
     public void setWall(boolean wall) {
         this.isWall = wall;
     }
+
+//    @Override
+//    public String toString() {
+//        return "(" + row + ", " + col + ")";
+//    }
 }
