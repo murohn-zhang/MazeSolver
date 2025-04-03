@@ -5,6 +5,8 @@
  */
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
 public class MazeSolver {
@@ -34,14 +36,15 @@ public class MazeSolver {
 
         // Get start and end cells
         MazeCell end = maze.getEndCell();
-        MazeCell start = maze.getStartCell();
-        // Push initial end cell into stack
-        flipped.push(end);
+//        MazeCell start = maze.getStartCell();
+//        // Push initial end cell into stack
+//        flipped.push(end);
         // Keep pushing the parent of the cells into stack, until it's start
-        while (end != start) {
-            end = end.getParent();
+        while (end != maze.getStartCell()) {
             flipped.push(end);
+            end = end.getParent();
         }
+        solution.add(maze.getStartCell());
         // Reverse it so its start to end by adding from the top of the stack
         while (!(flipped.empty())) {
             solution.add(flipped.pop());
@@ -102,14 +105,57 @@ public class MazeSolver {
         return getSolution();
     }
 
-    /**
-     * Performs a Breadth-First Search to solve the Maze
-     * @return An ArrayList of MazeCells in order from the start to end cell
-     */
+    // Performs BFS to complete the maze by setting the parent cell for all cells needed
+    // And calling getSolution() at the end
+    // Visits the first cell seen next (use of queue!)
     public ArrayList<MazeCell> solveMazeBFS() {
-        // TODO: Use BFS to solve the maze
-        // Explore the cells in the order: NORTH, EAST, SOUTH, WEST
-        return null;
+        // Create a variable to hold the current cell, starting at the start cell
+        MazeCell current = maze.getStartCell();
+        // Set the start cell to explored, so we don't accidentally visit it again and go in circles
+        current.setExplored(true);
+        // Queue to hold cells to visit
+        Queue<MazeCell> toVisit = new LinkedList<MazeCell>();
+
+        int row = current.getRow();
+        int col = current.getCol();
+
+        // While we haven't reached the end cell, check each direction
+        // For each direction, if it's valid, add it to the queue, set it to explored so it's not visited multiple times
+        // And set parent to current so getSolution() knows where to go
+        while (current != maze.getStartCell()) {
+            // Check North
+            if (maze.isValidCell(row - 1, col)){
+                toVisit.add(maze.getCell(row - 1, col));
+                maze.getCell(row - 1, col).setExplored(true);
+                maze.getCell(row - 1, col).setParent(current);
+            }
+
+            // Check East
+            if (maze.isValidCell(row, col + 1)){
+                toVisit.add(maze.getCell(row , col + 1));
+                maze.getCell(row, col + 1).setExplored(true);
+                maze.getCell(row, col + 1).setParent(current);
+            }
+
+            // Check South
+            if (maze.isValidCell(row + 1, col)){
+                toVisit.add(maze.getCell(row + 1, col));
+                maze.getCell(row + 1, col).setExplored(true);
+                maze.getCell(row + 1, col).setParent(current);
+            }
+
+            // Check West
+            if (maze.isValidCell(row, col - 1)){
+                toVisit.add(maze.getCell(row, col - 1));
+                maze.getCell(row, col - 1).setExplored(true);
+                maze.getCell(row, col - 1).setParent(current);
+            }
+
+            // Otherwise, go to the first possible option
+            current = toVisit.remove();
+        }
+
+        return getSolution();
     }
 
     public static void main(String[] args) {
